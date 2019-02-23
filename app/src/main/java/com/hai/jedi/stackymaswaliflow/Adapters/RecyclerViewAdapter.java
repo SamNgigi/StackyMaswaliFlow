@@ -17,10 +17,6 @@ public class RecyclerViewAdapter
 
     private List<Answers> data;
 
-    public RecyclerViewAdapter(List<Answers> data){
-        this.data = data;
-    }
-
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView text;
 
@@ -30,18 +26,23 @@ public class RecyclerViewAdapter
         }
     }
 
+    public RecyclerViewAdapter(List<Answers> data){
+        this.data = data;
+    }
+
     @NonNull
     @Override
     public RecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
         View v = LayoutInflater.from(parent.getContext()).inflate(
-                 android.R.layout.simple_list_item_1, parent, false);
+                 android.R.layout.simple_selectable_list_item, parent, false);
         return new ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(RecyclerViewAdapter.ViewHolder viewHolder, int position){
+    public void onBindViewHolder(@NonNull RecyclerViewAdapter.ViewHolder viewHolder, int position){
         Answers answer = data.get(position);
         viewHolder.text.setText(answer.toString());
+        viewHolder.itemView.setTag(answer.answer_id);
     }
 
     @Override
