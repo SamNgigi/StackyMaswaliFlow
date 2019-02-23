@@ -17,11 +17,12 @@ import retrofit2.Call;
 public interface StackyInterface {
     String BASE_URL = "https://api.stackexchange.com";
     String c = "/2.2/questions?order=desc&sort=votes&site=stackoverflow&tagged=android&filter=withbody";
+    String d = "";
 
     @GET(c)
     Call<ListWrapper<Questions>> getQuestions();
 
-    @GET("/2.2/questions/{id}answers?order=desc&sort=votes&site=stackoverflow")
+    @GET("2.2/questions/{id}/answers?order=desc&sort=votes&site=stackoverflow")
     Call<ListWrapper<Answers>> getAnswersForQuestion(@Path("id") String question_id);
 
 }

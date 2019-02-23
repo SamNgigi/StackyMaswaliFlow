@@ -1,5 +1,6 @@
 package com.hai.jedi.stackymaswaliflow.UI;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,6 +33,7 @@ import com.hai.jedi.stackymaswaliflow.R;
 import com.hai.jedi.stackymaswaliflow.Services.ListWrapper;
 import com.hai.jedi.stackymaswaliflow.Utils.FakeDataProvider;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity
@@ -58,7 +60,12 @@ public class MainActivity
         questionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Questions questions = (Questions) parent.getAdapter().getItem(position);
+                // Displaying answers for a giving question
+                Questions question = (Questions) parent.getAdapter().getItem(position);
+                Log.d("CAN YOU SEE ME: ", String.valueOf(question));
+                // Fetching the answers for a given question
+                stackOverflowCall.getAnswersForQuestion(question.question_id)
+                                 .enqueue(answersCallback);
             }
 
             @Override
@@ -72,10 +79,6 @@ public class MainActivity
         recyclerView = findViewById(R.id.list);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-        List<Answers> answers = FakeDataProvider.getAnswers();
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(answers);
-        recyclerView.setAdapter(adapter);
-
         // Preparing the Api request
         createStackOverflowApi();
         stackOverflowCall.getQuestions().enqueue(questionsCallback);
@@ -129,7 +132,7 @@ public class MainActivity
     }
 
 
-    // Handling the response from the callback.
+    // Handling the question api call and response.
     Callback<ListWrapper<Questions>> questionsCallback = new Callback<ListWrapper<Questions>>(){
         @Override
         public void onResponse(Call<ListWrapper<Questions>> call,
@@ -151,6 +154,28 @@ public class MainActivity
 
         @Override
         public void onFailure(Call<ListWrapper<Questions>> call, Throwable exception){
+            exception.printStackTrace();
+        }
+    };
+
+    // Handling the get answers api call and response
+    Callback<ListWrapper<Answers>> answersCallback = new Callback<ListWrapper<Answers>>(){
+        @Override
+        public void onResponse(@NonNull Call<ListWrapper<Answers>> call,
+                               @NonNull Response<ListWrapper<Answers>>response){
+            if(response.isSuccessful()){
+                assert response.body() != null;
+                List<Answers> data = new ArrayList<>(response.body().items);
+                Log.d("CAN YOU SEE ME", String.valueOf(data));
+                recyclerView.setAdapter(new RecyclerViewAdapter(data));
+            } else {
+                Log.d("ANSWERS CALL",
+                        String.format("Code: %s Message: %s", response.code(), response.body()));
+            }
+        }
+
+        @Override
+        public void onFailure(Call<ListWrapper<Answers>> call, Throwable exception){
             exception.printStackTrace();
         }
     };
