@@ -1,7 +1,9 @@
-package com.hai.jedi.stackymaswaliflow;
+package com.hai.jedi.stackymaswaliflow.UI;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.hai.jedi.stackymaswaliflow.R;
 
 public class MainActivity extends AppCompatActivity {
 
