@@ -31,6 +31,7 @@ import com.hai.jedi.stackymaswaliflow.Models.Answers;
 import com.hai.jedi.stackymaswaliflow.Models.Questions;
 import com.hai.jedi.stackymaswaliflow.R;
 import com.hai.jedi.stackymaswaliflow.Services.ListWrapper;
+import com.hai.jedi.stackymaswaliflow.Services.StackService;
 import com.hai.jedi.stackymaswaliflow.Utils.FakeDataProvider;
 
 import java.util.ArrayList;
@@ -54,8 +55,10 @@ public class MainActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        // Initializing our Api Call to stackOverflowCall
+        stackOverflowCall= StackService.stackApiCall();
         questionSpinner = findViewById(R.id.questions_spinner);
+
 
         questionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -79,22 +82,11 @@ public class MainActivity
         recyclerView = findViewById(R.id.list);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-        // Preparing the Api request
-        createStackOverflowApi();
+
+        // Fetching the questions
         stackOverflowCall.getQuestions().enqueue(questionsCallback);
     }
 
-    private void createStackOverflowApi(){
-        Gson gson = new GsonBuilder()
-                        .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
-                        .create();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(StackyInterface.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-        stackOverflowCall = retrofit.create(StackyInterface.class);
-    }
 
     @Override
     protected void onResume(){
