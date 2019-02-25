@@ -17,6 +17,10 @@ public class RecyclerViewAdapter
 
     private List<Answers> data;
 
+    public RecyclerViewAdapter(List<Answers> data){
+        this.data = data;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView text;
 
@@ -26,9 +30,7 @@ public class RecyclerViewAdapter
         }
     }
 
-    public RecyclerViewAdapter(List<Answers> data){
-        this.data = data;
-    }
+
 
     @NonNull
     @Override

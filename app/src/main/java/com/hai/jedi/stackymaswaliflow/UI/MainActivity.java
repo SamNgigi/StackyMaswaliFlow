@@ -1,7 +1,11 @@
 package com.hai.jedi.stackymaswaliflow.UI;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -33,6 +37,7 @@ import com.hai.jedi.stackymaswaliflow.R;
 import com.hai.jedi.stackymaswaliflow.Services.ListWrapper;
 import com.hai.jedi.stackymaswaliflow.Services.StackService;
 import com.hai.jedi.stackymaswaliflow.Utils.FakeDataProvider;
+import com.hai.jedi.stackymaswaliflow.ViewModels.QuestionViewModels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,9 +62,12 @@ public class MainActivity
         setContentView(R.layout.activity_main);
         // Initializing our Api Call to stackOverflowCall
         stackOverflowCall= StackService.stackApiCall();
+        // Grabbing the spinner.
         questionSpinner = findViewById(R.id.questions_spinner);
-
-
+        /*
+        * Populating the spinner with questions and listening in on the question selected to display a
+        * answer info.
+        * */
         questionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -84,7 +92,22 @@ public class MainActivity
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
 
         // Fetching the questions
-        stackOverflowCall.getQuestions().enqueue(questionsCallback);
+        QuestionViewModels questionViewModel = ViewModelProviders.of(this)
+                                                                 .get(QuestionViewModels.class);
+
+        questionViewModel.getQuestionList().observe(
+                this, new Observer<ListWrapper<Questions>>(){
+                    @Override
+                    public void onChanged(ListWrapper<Questions> questionsListWrapper){
+                        ArrayAdapter<Questions> questionsArrayAdapter = new ArrayAdapter<Questions>(
+                                MainActivity.this,
+                                android.R.layout.simple_spinner_dropdown_item,
+                                questionsListWrapper.items
+                        );
+
+                        questionSpinner.setAdapter(questionsArrayAdapter);
+                    }
+                });
     }
 
 
@@ -124,31 +147,6 @@ public class MainActivity
     }
 
 
-    // Handling the question api call and response.
-    Callback<ListWrapper<Questions>> questionsCallback = new Callback<ListWrapper<Questions>>(){
-        @Override
-        public void onResponse(Call<ListWrapper<Questions>> call,
-                               Response<ListWrapper<Questions>> response){
-            if(response.isSuccessful()){
-                ListWrapper<Questions> questions = response.body();
-                Log.d("CAN YOU SEE ME", String.valueOf(questions));
-                assert questions != null;
-                ArrayAdapter<Questions> arrayAdapter = new ArrayAdapter<Questions>(
-                        MainActivity.this,
-                        android.R.layout.simple_spinner_dropdown_item, questions.items
-                );
-                questionSpinner.setAdapter(arrayAdapter);
-            } else {
-                Log.d("QUESTIONS_CALLBACK",
-                        String.format("Code: %s Message: %s", response.code(), response.body()));
-            }
-        }
-
-        @Override
-        public void onFailure(Call<ListWrapper<Questions>> call, Throwable exception){
-            exception.printStackTrace();
-        }
-    };
 
     // Handling the get answers api call and response
     Callback<ListWrapper<Answers>> answersCallback = new Callback<ListWrapper<Answers>>(){
