@@ -18,7 +18,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SharedViewModel extends ViewModel {
-    public static final String TAG = SharedViewModel.class.getSimpleName();
+    private static final String TAG = SharedViewModel.class.getSimpleName();
     private MutableLiveData<ListWrapper<Questions>> question_list;
     private MutableLiveData<ListWrapper<Answers>> answer_list;
     private final MutableLiveData<String> selectedQuestion = new MutableLiveData<String>();
@@ -34,10 +34,6 @@ public class SharedViewModel extends ViewModel {
 
     public void selectedQuestion(String question_id){
         selectedQuestion.setValue(question_id);
-    }
-
-    public LiveData<String> getSelectedQuestion(){
-        return selectedQuestion;
     }
 
     public LiveData<ListWrapper<Answers>> answersForQuestionSelected(){

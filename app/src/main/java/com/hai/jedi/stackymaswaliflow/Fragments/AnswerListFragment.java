@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import com.hai.jedi.stackymaswaliflow.Adapters.RecyclerViewAdapter;
 import com.hai.jedi.stackymaswaliflow.R;
 import com.hai.jedi.stackymaswaliflow.ViewModels.SharedViewModel;
+import com.hai.jedi.stackymaswaliflow.Models.Answers;
 
 import java.util.Objects;
 
@@ -37,14 +38,6 @@ public class AnswerListFragment extends Fragment {
 
     public AnswerListFragment() {
         // Required empty public constructor
-    }
-
-    public static AnswerListFragment newInstance(String question_id){
-        AnswerListFragment answerListFragment = new AnswerListFragment();
-        Bundle args = new Bundle();
-        args.putString("question_id", question_id);
-        answerListFragment.setArguments(args);
-        return answerListFragment;
     }
 
     @Override
