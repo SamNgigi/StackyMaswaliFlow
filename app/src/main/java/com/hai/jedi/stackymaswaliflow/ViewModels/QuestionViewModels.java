@@ -21,7 +21,7 @@ public class QuestionViewModels extends ViewModel {
     public static final String TAG = AnswerViewModel.class.getSimpleName();
     private MutableLiveData<ListWrapper<Questions>> question_list;
     private MutableLiveData<ListWrapper<Answers>> answer_list;
-    private final MutableLiveData<Questions> selectedQuestion = new MutableLiveData<Questions>();
+    private final MutableLiveData<String> selectedQuestion = new MutableLiveData<String>();
 
     public LiveData<ListWrapper<Questions>> getQuestionList () {
         if(question_list == null){
@@ -32,17 +32,18 @@ public class QuestionViewModels extends ViewModel {
         return question_list;
     }
 
-    public MutableLiveData<Questions> getSelectedQuestion(){
+    public void selectedQuestion(String question_id){
+        selectedQuestion.setValue(question_id);
+    }
+
+    public LiveData<String> getSelectedQuestion(){
         return selectedQuestion;
     }
 
-
-    public LiveData<ListWrapper<Answers>> answersForQuestionSelected(Questions question){
-        selectedQuestion.setValue(question);
+    public LiveData<ListWrapper<Answers>> answersForQuestionSelected(){
         if(answer_list == null){
             answer_list = new MutableLiveData<>();
             // Loading data asynchronously
-            loadAnswers(question);
         }
         return answer_list;
 
@@ -79,33 +80,28 @@ public class QuestionViewModels extends ViewModel {
     }
 
 
-    private void loadAnswers(Questions questions){
+    public void loadAnswers(String question_id){
         StackyInterface stackApiCall = StackService.stackApiCall();
-        Call<ListWrapper<Answers>> call = stackApiCall.getAnswersForQuestion(questions.question_id);
 
+        stackApiCall.getAnswersForQuestion(question_id)
+                    .enqueue(new Callback<ListWrapper<Answers>>(){
+                    @Override
+                    public void onResponse(@NonNull Call<ListWrapper<Answers>> call,
+                                           @NonNull Response<ListWrapper<Answers>> response){
+                        if(response.isSuccessful()){
+                            answer_list.setValue(response.body());
+                        } else {
+                            Log.d(TAG.toUpperCase(),
+                                    String.format("Code: %s Message: %s", response.code(), response.body()));
+                        }
 
-        call.enqueue(new Callback<ListWrapper<Answers>>(){
-            @Override
-            public void onResponse(@NonNull Call<ListWrapper<Answers>> call,
-                                   @NonNull Response<ListWrapper<Answers>> response){
-                if(response.isSuccessful()){
-                    ListWrapper<Answers> answers = response.body();
-                    Log.d(TAG.toUpperCase(), String.valueOf(answers));
-                    assert answers != null;
-                    answer_list.setValue(answers);
-                } else {
-                    Log.d(TAG.toUpperCase(),
-                            String.format("Code: %s Message: %s", response.code(), response.body()));
-                }
+                    }
 
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ListWrapper<Answers>> call,
-                                  @NonNull Throwable exception){
-                exception.printStackTrace();
-            }
-        });
+                    @Override
+                    public void onFailure(@NonNull Call<ListWrapper<Answers>> call,
+                                          @NonNull Throwable exception){
+                        exception.printStackTrace();
+        }});
     }
 
 }

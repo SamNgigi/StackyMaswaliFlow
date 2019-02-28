@@ -19,6 +19,7 @@ import com.hai.jedi.stackymaswaliflow.Adapters.RecyclerViewAdapter;
 import com.hai.jedi.stackymaswaliflow.Models.Answers;
 import com.hai.jedi.stackymaswaliflow.R;
 import com.hai.jedi.stackymaswaliflow.Services.ListWrapper;
+import com.hai.jedi.stackymaswaliflow.Utils.FakeDataProvider;
 import com.hai.jedi.stackymaswaliflow.ViewModels.AnswerViewModel;
 import com.hai.jedi.stackymaswaliflow.ViewModels.QuestionViewModels;
 
@@ -33,8 +34,12 @@ import butterknife.ButterKnife;
  */
 public class AnswerListFragment extends Fragment {
 
+    private static final String TAG = AnswerListFragment.class.getSimpleName().toUpperCase();
+
     @BindView(R.id.list) RecyclerView recyclerView;
     String question_id;
+
+    private QuestionViewModels questionViewModels;
 
     public AnswerListFragment() {
         // Required empty public constructor
@@ -49,8 +54,17 @@ public class AnswerListFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstances){
-        super.onCreate(savedInstances);
+    public void onActivityCreated(Bundle savedInstances){
+        super.onActivityCreated(savedInstances);
+
+        questionViewModels = ViewModelProviders.of(Objects.requireNonNull(this.getActivity()))
+                .get(QuestionViewModels.class);
+
+        questionViewModels.answersForQuestionSelected().observe(
+                this, questions -> {
+                    recyclerView.setAdapter(new RecyclerViewAdapter(questions.items));
+                }
+        );
 
         /*question_id = getArguments().getString(question_id);
         Log.d("CAN YOU SEE ME", question_id);*/
@@ -61,12 +75,13 @@ public class AnswerListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_answer_list, container, false);
         ButterKnife.bind(this, view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+
         return view;
     }
 

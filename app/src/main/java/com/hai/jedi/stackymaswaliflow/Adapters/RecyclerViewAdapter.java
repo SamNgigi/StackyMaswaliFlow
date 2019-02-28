@@ -52,6 +52,9 @@ public class RecyclerViewAdapter
         return data.size();
     }
 
-
+    public void updateData(List<Answers> answers){
+        this.data = answers;
+        notifyDataSetChanged();
+    }
 
 }

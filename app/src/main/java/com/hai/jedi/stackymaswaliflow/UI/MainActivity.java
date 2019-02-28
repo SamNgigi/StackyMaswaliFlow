@@ -60,6 +60,10 @@ public class MainActivity
 
     private Button authButton;
 
+    private Spinner questionSpinner;
+    private RecyclerView recyclerView;
+    private Questions question;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
