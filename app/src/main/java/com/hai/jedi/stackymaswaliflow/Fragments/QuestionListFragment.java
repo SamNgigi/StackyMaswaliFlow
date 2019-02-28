@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProviders;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +21,7 @@ import android.widget.Spinner;
 import com.hai.jedi.stackymaswaliflow.Models.Questions;
 import com.hai.jedi.stackymaswaliflow.R;
 import com.hai.jedi.stackymaswaliflow.Services.ListWrapper;
-import com.hai.jedi.stackymaswaliflow.UI.MainActivity;
-import com.hai.jedi.stackymaswaliflow.ViewModels.QuestionViewModels;
+import com.hai.jedi.stackymaswaliflow.ViewModels.SharedViewModel;
 
 import java.util.Objects;
 
@@ -35,7 +33,7 @@ public class QuestionListFragment extends Fragment {
     @BindView(R.id.questions_spinner)
     Spinner  questionSpinner;
     private Questions question;
-    private QuestionViewModels questionViewModel;
+    private SharedViewModel sharedViewModel;
 
     public QuestionListFragment() {
         // Required empty public constructor
@@ -45,10 +43,10 @@ public class QuestionListFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
 
-        questionViewModel = ViewModelProviders.of(Objects.requireNonNull(this.getActivity()))
-                .get(QuestionViewModels.class);
+        sharedViewModel = ViewModelProviders.of(Objects.requireNonNull(this.getActivity()))
+                .get(SharedViewModel.class);
 
-        questionViewModel.getQuestionList().observe(
+        sharedViewModel.getQuestionList().observe(
                 this, new Observer<ListWrapper<Questions>>(){
                     @Override
                     public void onChanged(ListWrapper<Questions> questionsListWrapper){
@@ -69,8 +67,8 @@ public class QuestionListFragment extends Fragment {
                 // Displaying answers for a giving question
                 question = (Questions) parent.getAdapter().getItem(position);
                 //Log.d("CAN YOU SEE ME: ", String.valueOf(question));
-                questionViewModel.selectedQuestion(question.question_id);
-                questionViewModel.loadAnswers(question.question_id);
+                sharedViewModel.selectedQuestion(question.question_id);
+                sharedViewModel.loadAnswers(question.question_id);
                 // updateAnswerListFragment(question.question_id);
 
             }

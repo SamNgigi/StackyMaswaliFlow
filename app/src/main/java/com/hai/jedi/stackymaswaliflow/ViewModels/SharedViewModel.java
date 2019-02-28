@@ -17,8 +17,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class QuestionViewModels extends ViewModel {
-    public static final String TAG = AnswerViewModel.class.getSimpleName();
+public class SharedViewModel extends ViewModel {
+    public static final String TAG = SharedViewModel.class.getSimpleName();
     private MutableLiveData<ListWrapper<Questions>> question_list;
     private MutableLiveData<ListWrapper<Answers>> answer_list;
     private final MutableLiveData<String> selectedQuestion = new MutableLiveData<String>();
@@ -70,7 +70,7 @@ public class QuestionViewModels extends ViewModel {
 
 
                } else {
-                Log.d("QuestionViewModel", "Something went wrong");
+                Log.d("sharedViewModel", "Something went wrong");
                }
 
            }

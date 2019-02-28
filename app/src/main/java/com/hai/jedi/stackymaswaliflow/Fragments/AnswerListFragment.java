@@ -5,23 +5,17 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.hai.jedi.stackymaswaliflow.Adapters.RecyclerViewAdapter;
-import com.hai.jedi.stackymaswaliflow.Models.Answers;
 import com.hai.jedi.stackymaswaliflow.R;
-import com.hai.jedi.stackymaswaliflow.Services.ListWrapper;
-import com.hai.jedi.stackymaswaliflow.Utils.FakeDataProvider;
-import com.hai.jedi.stackymaswaliflow.ViewModels.AnswerViewModel;
-import com.hai.jedi.stackymaswaliflow.ViewModels.QuestionViewModels;
+import com.hai.jedi.stackymaswaliflow.ViewModels.SharedViewModel;
 
 import java.util.Objects;
 
@@ -39,7 +33,7 @@ public class AnswerListFragment extends Fragment {
     @BindView(R.id.list) RecyclerView recyclerView;
     String question_id;
 
-    private QuestionViewModels questionViewModels;
+    private SharedViewModel sharedViewModel;
 
     public AnswerListFragment() {
         // Required empty public constructor
@@ -57,17 +51,15 @@ public class AnswerListFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstances){
         super.onActivityCreated(savedInstances);
 
-        questionViewModels = ViewModelProviders.of(Objects.requireNonNull(this.getActivity()))
-                .get(QuestionViewModels.class);
+        sharedViewModel = ViewModelProviders.of(Objects.requireNonNull(this.getActivity()))
+                .get(SharedViewModel.class);
 
-        questionViewModels.answersForQuestionSelected().observe(
+        sharedViewModel.answersForQuestionSelected().observe(
                 this, questions -> {
                     recyclerView.setAdapter(new RecyclerViewAdapter(questions.items));
                 }
         );
 
-        /*question_id = getArguments().getString(question_id);
-        Log.d("CAN YOU SEE ME", question_id);*/
     }
 
 
@@ -80,8 +72,6 @@ public class AnswerListFragment extends Fragment {
         ButterKnife.bind(this, view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-
         return view;
     }
 
