@@ -9,16 +9,19 @@
     android:layout_margin="8dp"
     tools:context=".UI.MainActivity">
 
-    <Spinner
+    <fragment
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/questions_spinner"/>
+        android:name="com.hai.jedi.stackymaswaliflow.Fragments.QuestionListFragment"
+        tools:layout="@layout/fragment_question_list"
+        android:id="@+id/questionListFragment"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/list"
+    <fragment
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_height="match_parent"
+        android:name="com.hai.jedi.stackymaswaliflow.Fragments.AnswerListFragment"
+        tools:layout="@layout/fragment_answer_list"
+        android:id="@+id/answerListFragment"/>
 
     <Button
         android:id="@+id/authenticate_button"
