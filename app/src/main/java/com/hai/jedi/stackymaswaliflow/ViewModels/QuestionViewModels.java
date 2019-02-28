@@ -43,7 +43,11 @@ public class QuestionViewModels extends ViewModel {
     public LiveData<ListWrapper<Answers>> answersForQuestionSelected(){
         if(answer_list == null){
             answer_list = new MutableLiveData<>();
-            // Loading data asynchronously
+           /* *
+            * To be able to load answer-list dynamically i had to call the loadAnswers function in the
+            * QuestionListFragment and the observe this function "answersForQuestionSelected" in
+            * the AnswerListFragment.
+           */
         }
         return answer_list;
 
@@ -82,9 +86,8 @@ public class QuestionViewModels extends ViewModel {
 
     public void loadAnswers(String question_id){
         StackyInterface stackApiCall = StackService.stackApiCall();
-
-        stackApiCall.getAnswersForQuestion(question_id)
-                    .enqueue(new Callback<ListWrapper<Answers>>(){
+        Call<ListWrapper<Answers>> call = stackApiCall.getAnswersForQuestion(question_id);
+        call.enqueue(new Callback<ListWrapper<Answers>>(){
                     @Override
                     public void onResponse(@NonNull Call<ListWrapper<Answers>> call,
                                            @NonNull Response<ListWrapper<Answers>> response){
@@ -101,7 +104,8 @@ public class QuestionViewModels extends ViewModel {
                     public void onFailure(@NonNull Call<ListWrapper<Answers>> call,
                                           @NonNull Throwable exception){
                         exception.printStackTrace();
-        }});
+                    }
+        });
     }
 
 }
